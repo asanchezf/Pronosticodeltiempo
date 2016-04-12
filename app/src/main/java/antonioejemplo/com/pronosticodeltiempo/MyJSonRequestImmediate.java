@@ -1,40 +1,41 @@
 package antonioejemplo.com.pronosticodeltiempo;
 
-
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-
-public class MyJsonRequest extends JsonObjectRequest {
+/**
+ * Created by Susana on 11/04/2016.
+ */
+public class MyJSonRequestImmediate extends JsonObjectRequest {
 
     //private Map<String, String> headers = new HashMap<String, String>();
-    private Priority inmediatePriority = Priority.HIGH;
+    private Request.Priority inmediatePriority = Request.Priority.IMMEDIATE;
 
-    public MyJsonRequest(int method,
+    public MyJSonRequestImmediate(int method,
                          String url,
                          JSONObject jsonRequest,
-                         Listener<JSONObject> listener,
-                         ErrorListener errorListener) {
+                         Response.Listener<JSONObject> listener,
+                         Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
         // TODO Auto-generated constructor stub
     }
 
-    public MyJsonRequest(String url,
+    public MyJSonRequestImmediate(String url,
                          JSONObject jsonRequest,
-                         Listener<JSONObject> listener,
-                         ErrorListener errorListener) {
+                         Response.Listener<JSONObject> listener,
+                         Response.ErrorListener errorListener) {
         super(url,jsonRequest,listener,errorListener);
     }
 
 
     //NUEVO
-    public MyJsonRequest(int method,
+    public MyJSonRequestImmediate(int method,
                          String url,
-                         Listener<JSONObject> listener,
-                         ErrorListener errorListener) {
+                         Response.Listener<JSONObject> listener,
+                         Response.ErrorListener errorListener) {
         super(method, url, listener, errorListener);
 
     }
@@ -50,11 +51,15 @@ public class MyJsonRequest extends JsonObjectRequest {
         headers.put(title, content);
     }*/
 
-    public Priority getInmediatePriority() {
+    public Request.Priority getInmediatePriority() {
         return inmediatePriority;
     }
 
-    public void setInmediatePriority(Priority inmediatePriority) {
+    public void setInmediatePriority(Request.Priority inmediatePriority) {
         this.inmediatePriority = inmediatePriority;
     }
+
+
+
+
 }

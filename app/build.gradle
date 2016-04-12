@@ -27,5 +27,5 @@ dependencies {
     /*Se importa el módulo completo de volley y luego lo compilamos desde aquí*/
     compile project(':volley')
     /*Se importa también Gson para facilitar el paseado del Json*/
-    compile 'com.google.code.gson:gson:2.3'
+    /*compile 'com.google.code.gson:gson:2.3'*/
 }

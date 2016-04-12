@@ -41,7 +41,10 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.PronosticosViewHol
         //LLAMADA A LA API MEDIANTE VOLLEY. Ahora se hace desde el Main.
        // immediateRequestAdaptador();
 
+    }
 
+    public Adaptador(Context contexto) {
+        this.contexto = contexto;
     }
 
     private String  dameFecha(String fecharecibida){

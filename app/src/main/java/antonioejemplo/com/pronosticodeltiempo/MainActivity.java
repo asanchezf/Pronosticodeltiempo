@@ -113,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
         listaUI.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        //adaptador=new Adaptador(getApplicationContext());
+        //listaUI.setAdapter(adaptador);//Se lo pasamos aunque esté vacío para que el log no devuelva error: RecyclerView: No adapter attached; skipping layout
+       // adaptador.notifyDataSetChanged();
+
 
 //////////////=================LLenar el Recyclerview a modo de prueba con datos literales======================//////////////////////////////////////
 
@@ -173,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 
                         //REALIZAMOS LA PRIMERA PETICIÓN.
+                        immediateRequestPronosticos();
                         immediateRequestTiempoActual();//Nos trae el tiempo en las últimas tres horas
                         //immediateRequestPronosticos();//Nos trae los pronósticos
 
@@ -186,6 +191,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //adaptador.notifyDataSetChanged();
+        //listaUI.setAdapter(adaptador);
+        //adaptador.notifyDataSetChanged();
+    }
+
     private void immediateRequestPronosticos() {
         //PETICIÓN DATOS DE PRONÓSTICOS DEL TIEMPO:
         //Es una segunda petición a otro url:
@@ -205,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Log.v(LOGTAG, "Ha llegado a immediateRequestPronosticos. Uri: " + Uri);
 
-        myjsonObjectRequest = new MyJsonRequest(
+        myjsonObjectRequest = new MyJSonRequestImmediate(
                 Request.Method.GET,
                 Uri,
 
@@ -213,21 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        //Variables para los datos en el momento de la consulta:
-                        /*Double temperatura_today=null;
-                        int presion_today=0;
-                        int humedad_today=0;
-                        Double temp_min_today=null;
-                        Double temp_max_today=null;
-                        Double speed_today=null;
-                        int clouds_today=0;
-                        String icon_today="";
-                        String description_today="";*/
 
-                        //Variables los datos del pronóstico de los próximos 5 días:
-                        //String nombre="";
-                        //Double longitud=null;
-                        //Double latitud=null;
                         String fecha="";
                         Double temperatura=null;
                         int presion=0;
@@ -372,11 +382,14 @@ public class MainActivity extends AppCompatActivity {
                                     }//FIN json_array_wheather
 
 
-                                }//FIN json_array
+                                }//adaptadorFIN json_array
 
 
                             adaptador = new Adaptador(listdatos,getApplicationContext());
                             listaUI.setAdapter(adaptador);
+
+
+
 
                             imgclima.setVisibility(View.INVISIBLE);
                             listaUI.setVisibility(View.VISIBLE);
@@ -542,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //REALIZAMOS LA SEGUNDA PETICIÓN. PRIORITY NORMAL.
                             //lowRequest();
-                            immediateRequestPronosticos();
+                            //immediateRequestPronosticos();
 
                             icono.setImageResource(dameicono(icon));
                             icono.setVisibility(View.VISIBLE);
