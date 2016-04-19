@@ -2,6 +2,6 @@
     <string name="app_name">Pronóstico del tiempo</string>
     <string name="ciudad">Introduce el nombre de una ciudad</string>
     <string name="eltiempo_salir">Pulse otra vez para salir</string>
-    <string name="conexionerror">No se ha podido establecer conexión con el Servidor.</string>
+    <string name="conexionerror">No se ha podido establecer correctamente la conexión con el Servidor.</string>
 
 </resources>

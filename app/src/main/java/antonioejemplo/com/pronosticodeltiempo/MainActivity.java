@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
 
-    //JsonObjectRequest jsArrayRequest;//Tipo de petición Volley utilizada...
-    //private static String URL_BASE="http://api.openweathermap.org/data/2.5/weather?q=Madrid,ES&appid=b1b15e88fa797225412429c1c50c122a";
+
     private TextView txtrespuesta, txtcoordenadas,txtbase,txtwind,txtclima,txtinformacion,txtnubes,txtestation;
     private EditText txtciudad;
     //private EditText txtpais;
@@ -52,17 +51,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgclima;
 
 
-    private String png;
-    private String uriprueba;
+    //private String png;
+
 
 
     private static final String LOGTAG = "Pronosticodeltiempo";//Constante para gestionar la escritura en el Log
-    private CollapsingToolbarLayout ctlLayout;
 
     private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
-    private LinearLayoutManager llmanager;
 
-    private String Uri;
     private JsonObjectRequest myjsonObjectRequest;
     //Para el RecyclerView
     private RecyclerView listaUI;
@@ -77,14 +73,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        //App bar style NoActionBar es obligatorio...
+        //App bar style NoActionBar es obligatorio para que salga la toolbar o bien deshabilitar la ActionBar
+        //con windowActionBar a false y windowstitle a true dentro del archivo styles.xml
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
 
-        setSupportActionBar(toolbar);
-        llmanager = new LinearLayoutManager(this);
+        setSupportActionBar(toolbar);//Seteamos la toobar para que se comporte como una ActionBar
+        LinearLayoutManager llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        ctlLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
+        CollapsingToolbarLayout ctlLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
         ctlLayout.setTitle("El tiempo");
 
         FloatingActionButton btnfloat=(FloatingActionButton)findViewById(R.id.btnFab);
@@ -388,13 +386,11 @@ public class MainActivity extends AppCompatActivity {
                             adaptador = new Adaptador(listdatos,getApplicationContext());
                             listaUI.setAdapter(adaptador);
 
-
-
-
+                            btnResultado.setEnabled(true);
                             imgclima.setVisibility(View.INVISIBLE);
                             listaUI.setVisibility(View.VISIBLE);
 
-                            Log.v(LOGTAG, "JSON uriprueba: " + uriprueba);
+                            //Log.v(LOGTAG, "JSON uriprueba: " + uriprueba);
 
 
                         } catch (JSONException e) {
@@ -447,24 +443,23 @@ public class MainActivity extends AppCompatActivity {
 
         String pais = "";
         String patronUrl = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
-        Uri = String.format(patronUrl, ciudad, pais);
+        String uri = String.format(patronUrl, ciudad, pais);
 
 
-        Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + Uri);
+        Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
         myjsonObjectRequest = new MyJsonRequest(//Prioridad
                 Request.Method.GET,
-                Uri,
+                uri,
 
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response2) {
 
                         //Variables los datos del pronóstico de los próximos 5 días:
-                        String nombre="";
+                        String nombre = "";
                         Double longitud=null;
                         Double latitud=null;
-                        //String fecha="";
                         Double temperatura=null;
                         int presion=0;
                         int humedad=0;
@@ -474,8 +469,7 @@ public class MainActivity extends AppCompatActivity {
                         int clouds=0;
                         String icon="";
                         String description="";
-                        //String id="";
-                        //String main2="";
+
 
                         try {
 
@@ -546,12 +540,12 @@ public class MainActivity extends AppCompatActivity {
                             txtestation.setText(String.format("Estación meteorológica de %s", nombre));
 
                             //txtrespuesta.setText("Descripción del tiempo: "+" "+fin.toString());
-                            txtrespuesta.setText("Descripción del tiempo: " + " " + description);
+                            txtrespuesta.setText(String.format("Descripción del tiempo:  %s", description));
                             //txtrespuesta.setText(String.format("Descripción del tiempo:  %s", description));
                             //btnResultado.setVisibility(View.VISIBLE);
                             btnResultado.setEnabled(true);
                             // uriprueba="http://openweathermap.org/img/w/"+icon+""+png+"&appid=ffff21faa9754c531c28bad3ddc19605";
-                            png = ".png";
+                            //png = ".png";
 
                             //REALIZAMOS LA SEGUNDA PETICIÓN. PRIORITY NORMAL.
                             //lowRequest();
@@ -605,71 +599,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // PETICIÓN PARA OBTENER LA IMAGEN. No se utiliza pq las imágenes ya están cargadas en el propio proyecto. Así nos ahorramos conexiones a la Api para bajarse los iconos.
-    private void lowRequest() {
- /*PARA QUE FUNCIONE CORRECTAMENTE HEMOS TENIDO QUE MODIFICAR LAS CLASES ORIGINALES DE VOLLEY QUE OBTIENEN LAS IMÁGENES Y LOS JSONOBJECT PARA PODER ESTABLECER UNA PRIORITY
- * DISTINTA A LA QUE VIENE POR DEFECTO. ADEMÁS ESTA SEGUNDA PETICIÓN SE REALIZA EN LA RESPUESTA DE LA PRIMERA PORQUE NECESITA DATOS DE ÉSTA.*/
- /*UTILIZANDO ESTA PETICIÓN SE OBTIENE EL ICONO CUYO CÓDIGO HEMOS OBTENIDO PREVIAMENTE EN LA RESPUESTA DE LA PRIMERA PETICIÓN*/
-        /*En este situación usaremos el tipo ImageRequest para obtener cada imagen. Solo necesitamos concatenar
-        la url absoluta que fue declarada como atributo, más la dirección relativa que cada imagen trae consigo
-        en el objeto JSON*/
-
-        String icon="";
-
-        // Etiqueta utilizada para cancelar la petición
-        String tag_json_obj_img = "json_obj_req_img";
-        //http://openweathermap.org/img/w/10d.png&appid=ffff21faa9754c531c28bad3ddc19605
-        String patronIcono = "http://openweathermap.org/img/w/%s%s";
-        String uriIcono = String.format(patronIcono, icon, png);
-
-        //String uriprueba="http://openweathermap.org/img/w/"+icon+""+png+"&appid=ffff21faa9754c531c28bad3ddc19605";
-
-        //String uriprueba="http://openweathermap.org/img/w/04d.png&appid=ffff21faa9754c531c28bad3ddc19605";
-        //String uriprueba="http://openweathermap.org/img/w/01n.png";
-        Log.v(LOGTAG, "Respuesta en JSON uriprueba: " + uriprueba);
-        Log.v(LOGTAG, "Respuesta en JSON icono: " + icon);
-        Log.v(LOGTAG, "Respuesta en JSON png: " + png);
-        Log.v(LOGTAG, "Respuesta en JSON uriIcono: " + uriIcono);
-        //urlIcono="http://openweathermap.org/img/w/10d.png";
-
-
-        // requestQueue = Volley.newRequestQueue(this);
-
-        //priority = Request.Priority.LOW;
-        ImageRequest request = new MyImageRequest(
-
-                uriIcono,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap bitmap) {
-                        icono.setImageBitmap(bitmap);
-                       // Log.v(LOGTAG, "Error Respuesta en JSON icono: " + icon);
-                    }
-                },
-                0, 0, null, null,
-                new Response.ErrorListener() {
-                    public void onErrorResponse(VolleyError error) {
-                        icono.setImageResource(R.drawable.sol);//Si de error ponemos un sol...
-                        Log.d(LOGTAG, "Error en respuesta Bitmap: " + error.getMessage());
-                    }
-                }
-        );
-
-        // Añadir petición a la cola
-        //requestQueue.add(jsArrayRequest);
-        //requestQueue.add(myjsonObjectRequest);
-
-        //requestQueue.add(request);
-
-        AppController.getInstance().addToRequestQueue(request, tag_json_obj_img);
-
-        //AppController.getInstance().getRequestQueue().getCache().remove(uriIcono);//Eliminar cache
-
-        //AppController.getInstance().getRequestQueue().getCache().invalidate(uriIcono, true);//Desactivar cache
-
-
-
-    }
 
     private void cargarImagenToolbar() {
  /*PARA QUE FUNCIONE CORRECTAMENTE HEMOS TENIDO QUE MODIFICAR LAS CLASES ORIGINALES DE VOLLEY QUE OBTIENEN LAS IMÁGENES Y LOS JSONOBJECT PARA PODER ESTABLECER UNA PRIORITY
