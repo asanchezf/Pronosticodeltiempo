@@ -26,6 +26,7 @@ public class Modelo {
     }
 
 
+
     public String getDia() {
         return dia;
     }

@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Etiqueta utilizada para cancelar la petición
         String tag_json_obj = "json_obj_req_adaptador";
-        String ciudad = txtciudad.getText().toString();
+        String ciudad = txtciudad.getText().toString().trim();//Para quitar los espacios a ambos lados del campo
         String pais = "";
         String Uri;
         //http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         int humedad=0;
                         Double temp_min=null;
                         Double temp_max=null;
-                        Double speed=null;
+                        //Double speed=null;//No se va a utilizar porque no se muestra en el RecyclerView
                         int clouds=0;
                         String icon="";
                         String description="";
@@ -321,11 +321,13 @@ public class MainActivity extends AppCompatActivity {
                                     //speed_today = wind_today.getDouble("speed");
 
                                     //RESTO DE DATOS
-                                    JSONObject wind = json_array.getJSONObject(y).getJSONObject("wind");
-                                    speed = wind.getDouble("speed");
-                                    //deg=wind.getDouble("deg");
-                                    Log.v(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
+                                    //EL VIENTE YA NO NO SE MUESTRA EN EL RECYCLERVIEW
+                                    /*JSONObject wind = json_array.getJSONObject(y).getJSONObject("wind");
+                                    speed = wind.getDouble("speed");*/
 
+                                    //deg=wind.getDouble("deg");
+                                    //Log.v(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
+                                    //Log.e(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
                                     //Nubes clouds.Dentro de list. Es un objeto
                                     //RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
                                     //YA NO NECESITAMOS RECORRER EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
@@ -365,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                                         modelo.setHumedad(humedad);
                                         modelo.setPresion(presion);
                                         modelo.setPronostico(description);
-                                        modelo.setSpeed(speed);
+                                        //modelo.setSpeed(speed);
                                         modelo.setTemperatura(temperatura);
                                         modelo.setTemp_max(temp_max);
                                         modelo.setTemp_min(temp_min);
