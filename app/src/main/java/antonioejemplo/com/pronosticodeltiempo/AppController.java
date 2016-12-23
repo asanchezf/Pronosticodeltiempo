@@ -10,6 +10,10 @@ import com.android.volley.toolbox.Volley;
 
 /**
  * Created by Susana on 02/04/2016.
+ * La mejor forma de mantener los objetos de Volley y la cola de peticiones es hacerlos globales mediante
+ * la creación de una clase que sigue el patrón de diseño singleton y que hereda del objeto Application
+ * Para poder utilizar esta clase debemos añadirla en el Manifiest dentro de la etiqueta Application utilizando
+ * la propiedad android;name para que se ejecute al inicio de la aplicación.
  */
 public class AppController extends Application {
     public static final String TAG = AppController.class

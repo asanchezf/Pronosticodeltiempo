@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
 
     defaultConfig {
         applicationId "antonioejemplo.com.pronosticodeltiempo"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -22,10 +22,13 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
     /*Se importa el módulo completo de volley y luego lo compilamos desde aquí*/
     compile project(':volley')
     /*Se importa también Gson para facilitar el paseado del Json*/
     /*compile 'com.google.code.gson:gson:2.3'*/
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+
 }
+apply plugin: 'com.google.gms.google-services'

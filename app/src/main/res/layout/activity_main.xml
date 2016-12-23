@@ -81,7 +81,7 @@
         <Button
             android:layout_width="220dp"
             android:layout_height="35dp"
-            android:text="BORRAR DATOS"
+            android:text="@string/borrar_datos"
             android:id="@+id/btnresultado"
             android:enabled="false"
             android:background="@drawable/redondea_boton"
@@ -109,7 +109,7 @@
                 android:id="@+id/txtrespuesta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Comentario actualizado"
+                android:text="@string/pron_stico_actualizado"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:textStyle="bold"/>
@@ -138,44 +138,50 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Estación meteorológica"
+            android:text="@string/estaci_n_meteorol_gica"
             android:id="@+id/txtstation"
+            android:textStyle="bold"
 
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temperatura"
+            android:text="@string/temperatura"
             android:id="@+id/txtclima"
+            android:textStyle="bold"
 
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nubosidad"
+            android:text="@string/nubosidad"
             android:id="@+id/txtnubes"
+            android:textStyle="bold"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Datos sobre el viento"
-            android:id="@+id/txtwind" />
+            android:text="@string/datos_sobre_el_viento"
+            android:id="@+id/txtwind"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Presión atmosférica"
-            android:id="@+id/textbase" />
+            android:text="@string/presi_n_atmosf_rica"
+            android:id="@+id/textbase"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Coordenadas"
+            android:text="@string/coordenadas"
             android:id="@+id/txtcoordenadas"
+            android:textStyle="bold"
             />
 
 
@@ -209,7 +215,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@android:drawable/btn_star"
+        android:src="@android:drawable/btn_star_big_on"
         app:borderWidth="0dp"
         app:layout_anchor="@id/appbarLayout"
         app:layout_anchorGravity="bottom|right|end" />

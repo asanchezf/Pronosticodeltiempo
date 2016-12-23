@@ -28,6 +28,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
     private Adaptador adaptador;
     private List<Modelo> listdatos;//Se le enviará al Adaptador
 
+
+
+   /* public class MyFirebaseMessagingService extends FirebaseMessagingService
+    {
+        @Override
+        public void onMessageReceived(RemoteMessage remoteMessage)
+        {
+            Log.e("FIREBASE", remoteMessage.getNotification().getBody());
+        }
+    }*/
+
+   /* public class FCMIdService extends FirebaseInstanceIdService {
+        @Override
+        public void onTokenRefresh() {
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        // hacer algo adicional si lo quiero guardar, pero no hace falta.
+        }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +196,18 @@ public class MainActivity extends AppCompatActivity {
                         snack.show();
                     } else {
 
+                        //Para refrescar conocimientos de volley ver http://www.tutorialesandroid.net/trabajando-con-volley-en-android/
+                        //o sino http://www.hermosaprogramacion.com/2015/02/android-volley-peticiones-http/
+
+                        //NOTA: Los métodos POST suelen dar problemas en algunos tipos de respuesta. Se recomienda utilizar
+                        //StringRequest si se van a mandar datos utilizándolo.
+
+                    /*  1-StringRequest: Este es el tipo más común, ya que permite solicitar un recurso con formato de texto plano, como son los documentos HTML.
+                        2-ImageRequest: Como su nombre lo indica, permite obtener un recurso gráfico alojado en un servidor externo.
+                        3-JsonObjectRequest: Obtiene una respuesta de tipo JSONObject a partir de un recurso con este formato.
+                        4-JsonArrayRequest: Obtiene como respuesta un objeto del tipo JSONArray a partir de un formato JSON.*/
+
+
                         //REALIZAMOS LA PRIMERA PETICIÓN.
                         immediateRequestPronosticos();
                         immediateRequestTiempoActual();//Nos trae el tiempo en las últimas tres horas
@@ -227,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Log.v(LOGTAG, "Ha llegado a immediateRequestPronosticos. Uri: " + Uri);
 
+        //Creamos JSonObjectRequest de respuesta inmediata...
         myjsonObjectRequest = new MyJSonRequestImmediate(
                 Request.Method.GET,
                 Uri,
@@ -441,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
 
         String tag_json_obj_actual = "json_obj_req_actual";
 
-        String ciudad = txtciudad.getText().toString();
+        String ciudad = txtciudad.getText().toString().trim();
 
         String pais = "";
         String patronUrl = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
@@ -542,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
                             txtestation.setText(String.format("Estación meteorológica de %s", nombre));
 
                             //txtrespuesta.setText("Descripción del tiempo: "+" "+fin.toString());
-                            txtrespuesta.setText(String.format("Descripción del tiempo:  %s", description));
+                            txtrespuesta.setText(String.format("En estos momentos tenemos:  %s", description));
                             //txtrespuesta.setText(String.format("Descripción del tiempo:  %s", description));
                             //btnResultado.setVisibility(View.VISIBLE);
                             btnResultado.setEnabled(true);

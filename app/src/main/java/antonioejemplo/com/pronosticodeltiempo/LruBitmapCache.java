@@ -8,6 +8,7 @@ import android.util.LruCache;
 
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
+//Esta clase sirve para el cacheado de las imágenes. En este caso no está siendo utilizada.
 public class LruBitmapCache extends LruCache<String, Bitmap> implements ImageCache {
     public static int getDefaultLruCacheSize() {
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
