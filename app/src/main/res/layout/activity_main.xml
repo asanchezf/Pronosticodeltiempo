@@ -56,7 +56,9 @@
         android:layout_height="wrap_content"
         tools:context="antonioejemplo.com.libreriavoley2.MainActivity"
         android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+        android:layout_marginLeft="5dp">
 
 
         <EditText
@@ -87,7 +89,7 @@
             android:background="@drawable/redondea_boton"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/button_top_margin"/>
@@ -95,7 +97,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPrimary"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             />
 
@@ -131,17 +133,21 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPrimary"
 
             />
 
         <TextView
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/estaci_n_meteorol_gica"
             android:id="@+id/txtstation"
             android:textStyle="bold"
-
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
             />
 
         <TextView
@@ -175,6 +181,14 @@
             android:id="@+id/textbase"
             android:textStyle="bold"/>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/humedad"
+            android:id="@+id/txtHumedad"
+            android:textStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -182,6 +196,7 @@
             android:text="@string/coordenadas"
             android:id="@+id/txtcoordenadas"
             android:textStyle="bold"
+            android:layout_marginBottom="10dp"
             />
 
 
@@ -189,18 +204,22 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
 
-            android:background="@color/colorAccent"/>
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="5dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp">
         <ImageView
             android:id="@+id/imgclima"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/clima"
+            android:src="@drawable/clima_new"
             android:visibility="visible"
+
             />
 
         <include layout="@layout/lista_pronosticos" />
@@ -215,7 +234,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@android:drawable/btn_star_big_on"
+        android:src="@drawable/ic_settings_brightness_black_24dp"
         app:borderWidth="0dp"
         app:layout_anchor="@id/appbarLayout"
         app:layout_anchorGravity="bottom|right|end" />

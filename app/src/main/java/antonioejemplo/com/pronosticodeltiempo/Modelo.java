@@ -17,6 +17,7 @@ public class Modelo {
     private String pronostico;
     private String imagen;
 
+
     public Modelo() {
     }
 

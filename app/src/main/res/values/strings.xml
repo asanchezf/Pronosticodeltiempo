@@ -1,15 +1,17 @@
 <resources>
     <string name="app_name">Pronóstico del tiempo</string>
-    <string name="ciudad">Introduce el nombre de una ciudad</string>
+    <string name="ciudad">Introduce el nombre de una ciudad española</string>
     <string name="eltiempo_salir">Pulsa otra vez para salir</string>
     <string name="conexionerror">No se ha podido establecer correctamente la conexión con el Servidor.</string>
     <string name="borrar_datos">BORRAR DATOS</string>
     <string name="pron_stico_actualizado">Pronóstico actualizado</string>
-    <string name="estaci_n_meteorol_gica">Estación meteorológica</string>
+    <string name="estaci_n_meteorol_gica"><u>Estación meteorológica</u></string>
     <string name="temperatura">Temperatura</string>
     <string name="nubosidad">Nubosidad</string>
     <string name="datos_sobre_el_viento">Datos sobre el viento</string>
     <string name="presi_n_atmosf_rica">Presión atmosférica</string>
+    <string name="humedad">Humedad</string>
     <string name="coordenadas">Coordenadas</string>
+    <string name="titulo">El tiempo</string>
 
 </resources>

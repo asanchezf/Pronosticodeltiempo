@@ -155,61 +155,61 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.PronosticosViewHol
     private  int dameicono(String icon){
 
 
-        if(icon.equals("01d")){
-            //icono.setImageResource(R.drawable.sol);
-            return R.drawable.sol;
-        }else if (icon.equals("02d")){
-            //icono.setImageResource(R.drawable.claros);
-            return R.drawable.claros;
-        }else if (icon.equals("03d")){
-            //icono.setImageResource(R.drawable.nubes);
-            return R.drawable.nubes;
-        }else if (icon.equals("04d")){
-            //icono.setImageResource(R.drawable.masnubes);
-            return R.drawable.masnubes;
-        }else if (icon.equals("09d")){
-            //icono.setImageResource(R.drawable.nubeslluvia);
-            return R.drawable.nubeslluvia;
-        }else if (icon.equals("10d")){
-            //icono.setImageResource(R.drawable.lluviasol);
-            return R.drawable.lluviasol;
-        }else if (icon.equals("11d")){
-            //icono.setImageResource(R.drawable.maslluvia);
-            return R.drawable.maslluvia;
-        }else if (icon.equals("13d")){
-            //icono.setImageResource(R.drawable.nieve);
-            return R.drawable.nieve;
-        }else if (icon.equals("50d")){
-            //icono.setImageResource(R.drawable.niebla);
-            return R.drawable.niebla;
-        }else if (icon.equals("01n")){
-            //icono.setImageResource(R.drawable.nocheclara);
-            return R.drawable.nocheclara;
-        }else if (icon.equals("02n")){
-            //icono.setImageResource(R.drawable.nochenubes);
-            return R.drawable.nochenubes;
-        }else if (icon.equals("03n")){
-            //icono.setImageResource(R.drawable.nubes);
-            return R.drawable.nubes;
-        }else if (icon.equals("04n")){
-            //icono.setImageResource(R.drawable.masnubes);
-            return R.drawable.masnubes;
-        }else if (icon.equals("10n")){
-            //icono.setImageResource(R.drawable.nubeslluvia);
-            return R.drawable.nubeslluvia;
-        }else if (icon.equals("11n")){
-            //icono.setImageResource(R.drawable.maslluvia);
-            return R.drawable.maslluvia;
-        }else if (icon.equals("13n")){
-            //icono.setImageResource(R.drawable.nieve);
-            return R.drawable.nieve;
-        }else if (icon.equals("50n")){
-            //icono.setImageResource(R.drawable.niebla);
-            return R.drawable.niebla;
-        }
-        else{
-            //icono.setImageResource(R.drawable.sol);
-            return R.drawable.error;
+        switch (icon) {
+            case "01d":
+                //icono.setImageResource(R.drawable.sol);
+                return R.drawable.sol;
+            case "02d":
+                //icono.setImageResource(R.drawable.claros);
+                return R.drawable.claros;
+            case "03d":
+                //icono.setImageResource(R.drawable.nubes);
+                return R.drawable.nubes;
+            case "04d":
+                //icono.setImageResource(R.drawable.masnubes);
+                return R.drawable.masnubes;
+            case "09d":
+                //icono.setImageResource(R.drawable.nubeslluvia);
+                return R.drawable.nubeslluvia;
+            case "10d":
+                //icono.setImageResource(R.drawable.lluviasol);
+                return R.drawable.lluviasol;
+            case "11d":
+                //icono.setImageResource(R.drawable.maslluvia);
+                return R.drawable.maslluvia;
+            case "13d":
+                //icono.setImageResource(R.drawable.nieve);
+                return R.drawable.nieve;
+            case "50d":
+                //icono.setImageResource(R.drawable.niebla);
+                return R.drawable.niebla;
+            case "01n":
+                //icono.setImageResource(R.drawable.nocheclara);
+                return R.drawable.nocheclara;
+            case "02n":
+                //icono.setImageResource(R.drawable.nochenubes);
+                return R.drawable.nochenubes;
+            case "03n":
+                //icono.setImageResource(R.drawable.nubes);
+                return R.drawable.nubes;
+            case "04n":
+                //icono.setImageResource(R.drawable.masnubes);
+                return R.drawable.masnubes;
+            case "10n":
+                //icono.setImageResource(R.drawable.nubeslluvia);
+                return R.drawable.nubeslluvia;
+            case "11n":
+                //icono.setImageResource(R.drawable.maslluvia);
+                return R.drawable.maslluvia;
+            case "13n":
+                //icono.setImageResource(R.drawable.nieve);
+                return R.drawable.nieve;
+            case "50n":
+                //icono.setImageResource(R.drawable.niebla);
+                return R.drawable.niebla;
+            default:
+                //icono.setImageResource(R.drawable.sol);
+                return R.drawable.error;
         }
 
 
@@ -286,7 +286,8 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.PronosticosViewHol
         //holder.txtTemperatura.setText(String.format("%sºC", items.get(position).getTemperatura().toString()));//Temperatura
         holder.txtTemperatura.setText(String.format("%sºC", temperatura));//Temperatura
         //holder.imgicono.setImageResource(R.drawable.sol);
-        holder.imgicono.setImageResource(dameicono(items.get(position).getImagen()));
+        //holder.imgicono.setImageResource(dameicono(items.get(position).getImagen()));
+        holder.imgicono.setImageResource(new Util().dameicono(items.get(position).getImagen()));
 
         //dameicono(items.get(position).getImagen());
 

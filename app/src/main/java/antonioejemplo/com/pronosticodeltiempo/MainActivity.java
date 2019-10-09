@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,10 +29,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,12 +37,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
-
-
-    private TextView txtrespuesta, txtcoordenadas,txtbase,txtwind,txtclima,txtinformacion,txtnubes,txtestation;
+    private TextView txtrespuesta, txtcoordenadas, txtbase, txtwind, txtclima, txtinformacion, txtnubes, txtestation, txtHumedad;
     private EditText txtciudad;
     //private EditText txtpais;
     private Button btnResultado;
@@ -55,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgclima;
 
 
-    //private String png;
-
-
-
     private static final String LOGTAG = "Pronosticodeltiempo";//Constante para gestionar la escritura en el Log
 
     private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
@@ -66,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private JsonObjectRequest myjsonObjectRequest;
     //Para el RecyclerView
     private RecyclerView listaUI;
+
     private LinearLayoutManager linearLayoutManager;
     private Adaptador adaptador;
     private List<Modelo> listdatos;//Se le enviará al Adaptador
@@ -105,37 +98,44 @@ public class MainActivity extends AppCompatActivity {
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
         CollapsingToolbarLayout ctlLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
-        ctlLayout.setTitle("El tiempo");
+        ctlLayout.setTitle(getString(R.string.titulo));
 
-        FloatingActionButton btnfloat=(FloatingActionButton)findViewById(R.id.btnFab);
+        FloatingActionButton btnfloat = (FloatingActionButton) findViewById(R.id.btnFab);
 
 
         txtciudad = (EditText) findViewById(R.id.txtciudad);
         //txtpais = (EditText) findViewById(R.id.txtpais);
         txtrespuesta = (TextView) findViewById(R.id.txtrespuesta);
-        txtclima= (TextView) findViewById(R.id.txtclima);
+        txtclima = (TextView) findViewById(R.id.txtclima);
         txtcoordenadas = (TextView) findViewById(R.id.txtcoordenadas);
-        txtbase= (TextView) findViewById(R.id.textbase);
-        txtwind= (TextView) findViewById(R.id.txtwind);
+        txtbase = (TextView) findViewById(R.id.textbase);
+        txtHumedad = (TextView) findViewById(R.id.txtHumedad);
+        txtwind = (TextView) findViewById(R.id.txtwind);
         btnResultado = (Button) findViewById(R.id.btnresultado);
-        txtinformacion=(TextView)findViewById(R.id.txtinformacion);
-        txtnubes=(TextView)findViewById(R.id.txtnubes);
-        icono=(ImageView)findViewById(R.id.icono);
-        txtestation=(TextView)findViewById(R.id.txtstation);
+        txtinformacion = (TextView) findViewById(R.id.txtinformacion);
+        txtnubes = (TextView) findViewById(R.id.txtnubes);
+        icono = (ImageView) findViewById(R.id.icono);
+        txtestation = (TextView) findViewById(R.id.txtstation);
 
-        imgToolbar=(ImageView)findViewById(R.id.imgToolbar);
-        imgclima=(ImageView)findViewById(R.id.imgclima);
+        imgToolbar = (ImageView) findViewById(R.id.imgToolbar);
+        imgclima = (ImageView) findViewById(R.id.imgclima);
 
         // Preparar lista
         listaUI = (RecyclerView) findViewById(R.id.lista);
         listaUI.setHasFixedSize(true);//Va a tener tamaño fijo
-
         listaUI.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        //ESTABLECE LÍNEAS DIVISORIAS ENTRE LOS ITEMS...
+        DividerItemDecoration divider=new DividerItemDecoration(this,LinearLayoutManager.HORIZONTAL) ;
+
+
+        listaUI.addItemDecoration(divider);
+
+
         //adaptador=new Adaptador(getApplicationContext());
-        //listaUI.setAdapter(adaptador);//Se lo pasamos aunque esté vacío para que el log no devuelva error: RecyclerView: No adapter attached; skipping layout
-       // adaptador.notifyDataSetChanged();
+        //listaUI.setAdapter(adaptador);//Se lo pasamos aunque estév vacío para que el log no devuelva error: RecyclerView: No adapter attached; skipping layout
+        // adaptador.notifyDataSetChanged();
 
 
 //////////////=================LLenar el Recyclerview a modo de prueba con datos literales======================//////////////////////////////////////
@@ -144,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i=0;i<50;i++){
 
-            //datos.add(new Modelo("Día" +i,"Nubes"+i,""+i));
-            listdatos.add(new Modelo("Día" +i,"Nubes"+i));
+            //datos.add(new Modelo("Día" +i,"Nubes"+i,""+i));            listdatos.add(new Modelo("Día" +i,"Nubes"+i));
             Log.v("Llenando aaraylist",listdatos.get(i).getDia());
         }
 
@@ -179,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 borraDatos();
             }
         });
-
 
 
         if (btnfloat != null) {
@@ -253,13 +251,19 @@ public class MainActivity extends AppCompatActivity {
         // Etiqueta utilizada para cancelar la petición
         String tag_json_obj = "json_obj_req_adaptador";
         String ciudad = txtciudad.getText().toString().trim();//Para quitar los espacios a ambos lados del campo
-        String pais = "";
+
+        //4/12/2017 Está dando error. SE DEBE INFORMAR EL CÓDIGO DEL PAÍS
+        //String pais = "";
+        String pais = "es";
+
         String Uri;
-        //http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605
-        String patronUrl = "http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
+
+        String patronUrl = Referencias.pronosticoCincoDias;
+        //String patronUrl = "http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&mode=json&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
         Uri = String.format(patronUrl, ciudad, pais);
 
-        //Log.v(LOGTAG, "Ha llegado a immediateRequestPronosticos. Uri: " + Uri);
+        Log.v(LOGTAG, "Ha llegado a immediateRequestPronosticos. Uri: " + Uri);
+        //Uri: http://api.openweathermap.org/data/2.5/forecast?q=Madrid,&mode=json&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605
 
         //Creamos JSonObjectRequest de respuesta inmediata...
         myjsonObjectRequest = new MyJSonRequestImmediate(
@@ -271,63 +275,39 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
 
 
-                        String fecha="";
-                        Double temperatura=null;
-                        int presion=0;
-                        int humedad=0;
-                        Double temp_min=null;
-                        Double temp_max=null;
+                        String fecha = "";
+                        Double temperatura = null;
+                        int presion = 0;
+                        int humedad = 0;
+                        Double temp_min = null;
+                        Double temp_max = null;
                         //Double speed=null;//No se va a utilizar porque no se muestra en el RecyclerView
-                        int clouds=0;
-                        String icon="";
-                        String description="";
-                        listdatos=new ArrayList<Modelo>();
+                        int clouds = 0;
+                        String icon = "";
+                        String description = "";
+                        listdatos = new ArrayList<Modelo>();
                         Modelo modelo = null;
 
                         try {
 
 
-                            //Todo el json está en response. Lo recorremos
+                            //"list"--EN ESTE CASO ES UN ARRAY DE OBJETOS:
+                            JSONArray json_array = response.getJSONArray("list");
 
-                            //YA NO NECESITAMOS RECORRER EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
-                            /*for ( int i = 0; i < response.length(); i++) {
-                                //Log.v(LOGTAG,"Número de registros: "+response.length());
-                                //RECOJEMOS DATOS EN VARIABLES:
+                            Log.v(LOGTAG, "Estamos en list.Total" + " " + json_array.length());//Trae 40-ok
 
-                                //city-es un objeto que contiene otros 6 objetos:
-                                // id,name,coord,country y population.
-                                JSONObject city = response.getJSONObject("city");
+                            //LIST ES UN ARRAY. LO RECORREMOS Y EXTRAEMOS SUS VALORES==========================
+                            for (int y = 0; y < json_array.length(); y++) {
+                                //Log.v(LOGTAG, "Estamos en list dentro de su bucle" + " " + json_array.length());
+                                //Sacamos fecha. Es tipo Auto.No hay
+                                fecha = json_array.getJSONObject(y).getString("dt_txt");
+                                Log.v(LOGTAG, "Estamos en list obteniendo fecha: " + fecha + "Soy y: " + y);
 
-                                //Sacamos name. Es tipo Auto. No hay que hacer conversión a tipo objeto:
-                                nombre = city.getString("name");//No debe ir al Adapatador
-                                //Log.v(LOGTAG,"Estamos en raiz-nombre: "+nombre+"Soy i: "+i);
-
-                                //Sacamos coord. Es un objeto:NO debe ir al Adaptador
-                                JSONObject coord = city.getJSONObject("coord");
-                                //JSONObject coord = response.getJSONObject("coord");
-                                longitud = coord.getDouble("lon");
-                                latitud = coord.getDouble("lat");
-                                //Log.v(LOGTAG,"Estamos en raiz-coordenadas: "+longitud+latitud+"Soy i: "+i);
-
-                            }*/
-
-                                //"list"--EN ESTE CASO ES UN ARRAY DE OBJETOS:
-                                JSONArray json_array = response.getJSONArray("list");
-
-                                Log.v(LOGTAG,"Estamos en list.Total"+" "+json_array.length());//Trae 40-ok
-
-                                //LIST ES UN ARRAY. LO RECORREMOS Y EXTRAEMOS SUS VALORES==========================
-                                for (int y = 0; y < json_array.length(); y++) {
-                                    //Log.v(LOGTAG, "Estamos en list dentro de su bucle" + " " + json_array.length());
-                                    //Sacamos fecha. Es tipo Auto.No hay
-                                    fecha=json_array.getJSONObject(y).getString("dt_txt");
-                                    Log.v(LOGTAG,"Estamos en list obteniendo fecha: "+fecha+"Soy y: "+y);
-
-                                    //main. Dentro de list. Es un objeto
+                                //main. Dentro de list. Es un objeto
 
 
-                        ////////========================================================================================////////////////
-                                    //PRIMERO RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
+                                ////////========================================================================================////////////////
+                                //PRIMERO RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
                                    /* JSONObject main_today = json_array.getJSONObject(y).getJSONObject("main");
                                     if(i==0) {
                                         temperatura_today = main_today.getDouble("temp");
@@ -337,94 +317,93 @@ public class MainActivity extends AppCompatActivity {
                                         temp_max_today = main_today.getDouble("temp_max");
                                     }*/
 
-                                    //RECOGEMOS EL RESTO DE DATOS PARA PASÁRSELOS AL ADAPTADOR
-                                    JSONObject main = json_array.getJSONObject(y).getJSONObject("main");
-                                    temperatura = main.getDouble("temp");
-                                    presion = main.getInt("pressure");
-                                    humedad = main.getInt("humidity");
-                                    temp_min = main.getDouble("temp_min");
-                                    temp_max = main.getDouble("temp_max");
+                                //RECOGEMOS EL RESTO DE DATOS PARA PASÁRSELOS AL ADAPTADOR
+                                JSONObject main = json_array.getJSONObject(y).getJSONObject("main");
+                                temperatura = main.getDouble("temp");
+                                presion = main.getInt("pressure");
+                                humedad = main.getInt("humidity");
+                                temp_min = main.getDouble("temp_min");
+                                temp_max = main.getDouble("temp_max");
 
-                                    //Log.v(LOGTAG,"Estamos en list obteniendo main: "+temperatura+presion+humedad+temp_min+temp_max+"Soy y: "+y);
-                                    Log.v(LOGTAG,"Estamos en list obteniendo main: "+temperatura+"Soy y: "+y);
-                                    //wind. Dentro de list. Es un objeto
-                                    //JSONObject windkk = response2.getJSONObject("wind");
+                                //Log.v(LOGTAG,"Estamos en list obteniendo main: "+temperatura+presion+humedad+temp_min+temp_max+"Soy y: "+y);
+                                Log.v(LOGTAG, "Estamos en list obteniendo main: " + temperatura + "Soy y: " + y);
+                                //wind. Dentro de list. Es un objeto
+                                //JSONObject windkk = response2.getJSONObject("wind");
 
-                                    //RECOGEMOS DATOS DEL viento del DÍA--getJSONObject(0)
-                                    //YA NO NECESITAMOS EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
-                                    //JSONObject wind_today = json_array.getJSONObject(0).getJSONObject("wind");
-                                    //speed_today = wind_today.getDouble("speed");
+                                //RECOGEMOS DATOS DEL viento del DÍA--getJSONObject(0)
+                                //YA NO NECESITAMOS EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
+                                //JSONObject wind_today = json_array.getJSONObject(0).getJSONObject("wind");
+                                //speed_today = wind_today.getDouble("speed");
 
-                                    //RESTO DE DATOS
-                                    //EL VIENTE YA NO NO SE MUESTRA EN EL RECYCLERVIEW
+                                //RESTO DE DATOS
+                                //EL VIENTE YA NO NO SE MUESTRA EN EL RECYCLERVIEW
                                     /*JSONObject wind = json_array.getJSONObject(y).getJSONObject("wind");
                                     speed = wind.getDouble("speed");*/
 
-                                    //deg=wind.getDouble("deg");
-                                    //Log.v(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
-                                    //Log.e(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
-                                    //Nubes clouds.Dentro de list. Es un objeto
-                                    //RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
-                                    //YA NO NECESITAMOS RECORRER EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
-                                    //JSONObject nubes_today = json_array.getJSONObject(0).getJSONObject("clouds");
-                                    //clouds_today = nubes_today.getInt("all");
+                                //deg=wind.getDouble("deg");
+                                //Log.v(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
+                                //Log.e(LOGTAG,"Estamos en list obteniendo velocidad del viento: "+speed+"Soy y: "+y);
+                                //Nubes clouds.Dentro de list. Es un objeto
+                                //RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
+                                //YA NO NECESITAMOS RECORRER EL OBJETO PQ LOS DATOS LOS TRAEMOS DESDE EL MAIN
+                                //JSONObject nubes_today = json_array.getJSONObject(0).getJSONObject("clouds");
+                                //clouds_today = nubes_today.getInt("all");
 
-                                    //RESTO DE DATOS
-                                    JSONObject nubes = json_array.getJSONObject(y).getJSONObject("clouds");
-                                    clouds = nubes.getInt("all");
-                                    Log.v(LOGTAG,"Estamos en list obteniendo nubes: "+clouds+" "+"Soy y: "+y);
+                                //RESTO DE DATOS
+                                JSONObject nubes = json_array.getJSONObject(y).getJSONObject("clouds");
+                                clouds = nubes.getInt("all");
+                                Log.v(LOGTAG, "Estamos en list obteniendo nubes: " + clouds + " " + "Soy y: " + y);
 
-                                    // JSONArray json_array_weather = response.optJSONArray("weather");Error
-                                    //JSONArray json_array_weather = json_array.optJSONArray("weather");
-
-
-
-                                    //Definimos weather. Es un array de objetos que está dentro de list
-                                    //PRIMERO RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
-                                    //JSONArray json_array_weather_today=json_array.getJSONObject(0).getJSONArray("weather");
+                                // JSONArray json_array_weather = response.optJSONArray("weather");Error
+                                //JSONArray json_array_weather = json_array.optJSONArray("weather");
 
 
-                                    JSONArray json_array_weather=json_array.getJSONObject(y).getJSONArray("weather");
-
-                                    Log.v(LOGTAG,"Estamos en weather"+" "+json_array_weather.getString(0));
-
-                                    //weather ES UN ARRAY. LO RECORREMOS Y EXTRAEMOS SUS VALORES.
-                                    for (int z = 0; z < json_array_weather.length(); z++) {
-
-                                        //RESTO DE DATOS PARA EL ADAPTADOR
-                                        icon = json_array_weather.getJSONObject(z).getString("icon");
-                                        description = json_array_weather.getJSONObject(z).getString("description");
-                                       // Log.v(LOGTAG,"descripcion_today: "+description_today);
-
-                                        //RELLENAMOS EL MODELO
-                                        modelo=new Modelo();
-                                        modelo.setDia(fecha);
-                                        modelo.setHumedad(humedad);
-                                        modelo.setPresion(presion);
-                                        modelo.setPronostico(description);
-                                        //modelo.setSpeed(speed);
-                                        modelo.setTemperatura(temperatura);
-                                        modelo.setTemp_max(temp_max);
-                                        modelo.setTemp_min(temp_min);
-                                        modelo.setImagen(icon);
-
-                                        //CARGAMOS EL ARRAY
-                                        listdatos.add(modelo);
+                                //Definimos weather. Es un array de objetos que está dentro de list
+                                //PRIMERO RECOGEMOS DATOS DEL DÍA--getJSONObject(0)
+                                //JSONArray json_array_weather_today=json_array.getJSONObject(0).getJSONArray("weather");
 
 
-                                        Log.v(LOGTAG, "ArrayList lleno: "+listdatos.size());
+                                JSONArray json_array_weather = json_array.getJSONObject(y).getJSONArray("weather");
 
-                                    }//FIN json_array_wheather
+                                Log.v(LOGTAG, "Estamos en weather" + " " + json_array_weather.getString(0));
+
+                                //weather ES UN ARRAY. LO RECORREMOS Y EXTRAEMOS SUS VALORES.
+                                for (int z = 0; z < json_array_weather.length(); z++) {
+
+                                    //RESTO DE DATOS PARA EL ADAPTADOR
+                                    icon = json_array_weather.getJSONObject(z).getString("icon");
+                                    description = json_array_weather.getJSONObject(z).getString("description");
+                                    // Log.v(LOGTAG,"descripcion_today: "+description_today);
+
+                                    //RELLENAMOS EL MODELO
+                                    modelo = new Modelo();
+                                    modelo.setDia(fecha);
+                                    modelo.setHumedad(humedad);
+                                    modelo.setPresion(presion);
+                                    modelo.setPronostico(description);
+                                    //modelo.setSpeed(speed);
+                                    modelo.setTemperatura(temperatura);
+                                    modelo.setTemp_max(temp_max);
+                                    modelo.setTemp_min(temp_min);
+                                    modelo.setImagen(icon);
+
+                                    //CARGAMOS EL ARRAY
+                                    listdatos.add(modelo);
 
 
-                                }//adaptadorFIN json_array
+                                    Log.v(LOGTAG, "ArrayList lleno: " + listdatos.size());
+
+                                }//FIN json_array_wheather
 
 
-                            adaptador = new Adaptador(listdatos,getApplicationContext());
+                            }//adaptadorFIN json_array
+
+
+                            adaptador = new Adaptador(listdatos, getApplicationContext());
                             listaUI.setAdapter(adaptador);
 
                             btnResultado.setEnabled(true);
-                            imgclima.setVisibility(View.INVISIBLE);
+                            //imgclima.setVisibility(View.INVISIBLE);
                             listaUI.setVisibility(View.VISIBLE);
 
                             //Log.v(LOGTAG, "JSON uriprueba: " + uriprueba);
@@ -432,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.d(LOGTAG, "Error Respuesta en JSON: " );
+                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -456,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-        ) ;
+        );
 
 
         // Añadir petición a la cola
@@ -478,124 +457,117 @@ public class MainActivity extends AppCompatActivity {
 
         String ciudad = txtciudad.getText().toString().trim();
 
-        String pais = "";
-        String patronUrl = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
-        String uri = String.format(patronUrl, ciudad, pais);
+        //4/12/2017 Está dando error. SE DEBE INFORMAR EL CÓDIGO DEL PAÍS
+        String pais = "es";
 
+
+        String patronUrl = Referencias.tiempoActual;
+
+
+        //String patronUrl = "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605";
+        String uri = String.format(patronUrl, ciudad, pais);
+        //SE CONSTRUYE LA SIGUIENTE URI:http://api.openweathermap.org/data/2.5/weather?q=Madrid,es&units=metric&lang=ES&appid=ffff21faa9754c531c28bad3ddc19605;
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
         myjsonObjectRequest = new MyJsonRequest(//Prioridad
                 Request.Method.GET,
                 uri,
-
+                //LA RESPUESTA COMPLETA DE LA API ES UN JSONObject
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response2) {
 
                         //Variables los datos del pronóstico de los próximos 5 días:
                         String nombre = "";
-                        Double longitud=null;
-                        Double latitud=null;
-                        Double temperatura=null;
-                        int presion=0;
-                        int humedad=0;
-                        Double temp_min=null;
-                        Double temp_max=null;
-                        Double speed=null;
-                        int clouds=0;
-                        String icon="";
-                        String description="";
+                        Double longitud = null;
+                        Double latitud = null;
+                        Double temperatura = null;
+                        int presion = 0;
+                        int humedad = 0;
+                        Double temp_min = null;
+                        Double temp_max = null;
+                        Double speed = null;
+                        int clouds = 0;
+                        String icon = "";
+                        String description = "";
 
 
                         try {
 
-                            for (int i = 0; i < response2.length(); i++) {
+                            //"weather" ES UN ARRAY DE OBJETOS:
+                            JSONArray json_array = response2.getJSONArray("weather");
 
-                                //RECOJEMOS DATOS EN VARIABLES:
+                            //SI RECORREMOS EL ARRAY
+                         /*   for (int z = 0; z < json_array.length(); z++) {
+                                icon = json_array.getJSONObject(z).getString("icon");
+                                description = json_array.getJSONObject(z).getString("description");
+                            }*/
 
-                                //"weather"--EN ESTE CASO ES UN ARRAY DE OBJETOS:
-                                JSONArray json_array = response2.getJSONArray("weather");
-                                //String description2="";
-                                //Log.v(LOGTAG, "Respuesta en JSON- valor descripción antes" + description);
-                                for (int z = 0; z < json_array.length(); z++) {
-                                    icon = json_array.getJSONObject(z).getString("icon");
-                                    //id = json_array.getJSONObject(z).getString("id");
-                                    //main2 = json_array.getJSONObject(z).getString("main");
-                                    description = json_array.getJSONObject(z).getString("description");
-
-                                    //Pruebas:
-                                    //description2=json_array.getJSONObject(1).getString("description");
-                                    //Log.v(LOGTAG, "Respuesta en JSON- valor descripción después"+description);
-                                    //Log.v(LOGTAG, "Respuesta en JSON- valor descripción2 después"+description2);
-
-                                }
-
-
-
-                                //coord
-                                JSONObject coord = response2.getJSONObject("coord");
-                                longitud = coord.getDouble("lon");
-                                latitud = coord.getDouble("lat");
-
-                                //main
-                                JSONObject main = response2.getJSONObject("main");
-                                temperatura = main.getDouble("temp");
-                                presion = main.getInt("pressure");
-                                humedad = main.getInt("humidity");
-                                temp_min = main.getDouble("temp_min");
-                                temp_max = main.getDouble("temp_max");
-
-                                //wind
-                                JSONObject wind = response2.getJSONObject("wind");
-                                speed = wind.getDouble("speed");
-                                //deg=wind.getDouble("deg");
-
-                                //Nubes clouds
-                                JSONObject nubes = response2.getJSONObject("clouds");
-                                clouds = nubes.getInt("all");
-
-
-//                                JSONObject nombrefinal = response2.getJSONObject("name");
-//                                nombre = nombre.ge;
-                                nombre = response2.getString("name");
-
-
+                            //SI PREGUNTAMOS POR EL TAMAÑO DEL ARRAY QUE SOLO TIENE UNA POSICIÓN
+                            if (json_array.length() > 0) {
+                                icon = json_array.getJSONObject(0).getString("icon");
+                                description = json_array.getJSONObject(0).getString("description");
                             }
+
+                            //"coord" es un objeto
+                            JSONObject coord = response2.getJSONObject("coord");
+                            longitud = coord.getDouble("lon");
+                            latitud = coord.getDouble("lat");
+
+                            //"main" es un objeto
+                            JSONObject main = response2.getJSONObject("main");
+                            temperatura = main.getDouble("temp");
+                            presion = main.getInt("pressure");
+                            humedad = main.getInt("humidity");
+                            temp_min = main.getDouble("temp_min");
+                            temp_max = main.getDouble("temp_max");
+
+                            //"wind" es un objeto
+                            JSONObject wind = response2.getJSONObject("wind");
+                            speed = wind.getDouble("speed");
+                            //deg=wind.getDouble("deg");
+
+                            //Nubes "clouds" es un objeto
+                            JSONObject nubes = response2.getJSONObject("clouds");
+                            clouds = nubes.getInt("all");
+
+                            nombre = response2.getString("name");
+
+                            //SOLO SI TENEMOS EN CUENTA EL MODELO...
+                       /*     Modelo modelo=new Modelo();
+                            modelo.setLongitud(longitud);
+                            modelo.setLatitud(latitud);
+                            modelo.setPronostico(description);
+                            modelo.setImagen(icon);
+                            modelo.setTemperatura(temperatura);
+                            modelo.setPresion(presion);
+                            modelo.setHumedad(humedad);
+                            modelo.setTemp_max(temp_max);
+                            modelo.setTemp_min(temp_min);
+                            modelo.setSpeed(speed);
+                            modelo.setnumbes(clouds);*/
+
 
 
                             int velocidad = (int) (speed * 3.6);
                             //PINTAMOS LOS DATOS EN EL LAYOUT:
-                            txtcoordenadas.setText(String.format("Coordenadas: Longitud: %s -Latitud: %s", longitud.toString(), latitud.toString()));
+                            txtcoordenadas.setText(String.format("Coordenadas: Longitud: %s - Latitud: %s", longitud.toString(), latitud.toString()));
                             txtclima.setText(String.format("Temperatura : %sºC  Mín: %sºC  Máx: %sºC", temperatura.toString(), temp_min.toString(), temp_max.toString()));
                             txtnubes.setText(String.format("Nubosidad: %d%%", clouds));
-                            txtbase.setText(String.format("Presión: %dmbar Humedad: %d%%", presion, humedad));
+                            //txtbase.setText(String.format("Presión: %dmbar Humedad: %d%%", presion, humedad));
+                            txtbase.setText(String.format("Presión: %d mbar", presion));
+                            txtHumedad.setText(String.format("Humedad: %d%%", humedad));
                             txtwind.setText(String.format("Datos del viento: Velocidad: %s km/h ", velocidad));
-
                             txtinformacion.setText(String.format("Resultados obtenidos sobre la climatología de %s", txtciudad.getText()));
-
                             txtestation.setText(String.format("Estación meteorológica de %s", nombre));
-
                             //txtrespuesta.setText("Descripción del tiempo: "+" "+fin.toString());
                             txtrespuesta.setText(String.format("En estos momentos tenemos:  %s", description));
-                            //txtrespuesta.setText(String.format("Descripción del tiempo:  %s", description));
-                            //btnResultado.setVisibility(View.VISIBLE);
                             btnResultado.setEnabled(true);
-                            // uriprueba="http://openweathermap.org/img/w/"+icon+""+png+"&appid=ffff21faa9754c531c28bad3ddc19605";
-                            //png = ".png";
-
-                            //REALIZAMOS LA SEGUNDA PETICIÓN. PRIORITY NORMAL.
-                            //lowRequest();
-                            //immediateRequestPronosticos();
-
-                            icono.setImageResource(dameicono(icon));
+                            //icono.setImageResource(dameicono(icon));
+                            icono.setImageResource(new Util().dameicono(icon));
                             icono.setVisibility(View.VISIBLE);
-                            //uriprueba = String.format("http://openweathermap.org/img/w/%s%s", icon, png);
 
-                            /*icono.setVisibility(View.VISIBLE);
-                            uriprueba = String.format("http://openweathermap.org/img/w/%s%s", icon, png);
-
-                            Log.v(LOGTAG, "JSON uriprueba: " + uriprueba);*/
 
 
                         } catch (JSONException e) {
@@ -624,17 +596,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-        ) ;
+        );
 
-
-        // Añadir petición a la cola
-        //requestQueue.add(myjsonObjectRequest);
-        //requestQueue.add(request);
         // Añadimos la petición a la cola de peticiones
         AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
         //AppController.getInstance().getRequestQueue().getCache().invalidate(Uri, true);
     }
-
 
 
     private void cargarImagenToolbar() {
@@ -651,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
         //String patronIcono = "http://openweathermap.org/img/w/%s%s";
         //String uriIcono = String.format(patronIcono, icon, png);
 
-        String url="http://wiki.openstreetmap.org/w/images/5/50/Leaflet-OpenWeatherMap.png";
+        String url = "http://wiki.openstreetmap.org/w/images/5/50/Leaflet-OpenWeatherMap.png";
 
         //String uriprueba="http://openweathermap.org/img/w/"+icon+""+png+"&appid=ffff21faa9754c531c28bad3ddc19605";
 
@@ -700,27 +667,30 @@ public class MainActivity extends AppCompatActivity {
         //AppController.getInstance().getRequestQueue().getCache().invalidate(uriIcono, true);//Desactivar cache
 
 
-
     }
 
 
-
-
-    public void borraDatos(){
-
-        txtcoordenadas.setText("");
-        txtciudad.setText("");
-        txtrespuesta.setText("");
-        txtinformacion.setText("");
-        txtwind.setText("");
-        txtclima.setText("");
-        txtbase.setText("");
-        txtnubes.setText("");
+    public void borraDatos() {
+        inicializarTextos();
         icono.setVisibility(View.INVISIBLE);
-        txtestation.setText("");
         //imgToolbar.setImageResource(R.drawable.alberta);
         imgclima.setVisibility(View.VISIBLE);
         listaUI.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    private void inicializarTextos() {
+        txtciudad.setText("");
+        txtrespuesta.setText(R.string.pron_stico_actualizado);
+        txtinformacion.setText("");
+        txtwind.setText(R.string.datos_sobre_el_viento);
+        txtclima.setText(R.string.temperatura);
+        txtbase.setText(R.string.presi_n_atmosf_rica);
+        txtnubes.setText(R.string.nubosidad);
+        txtestation.setText(R.string.estaci_n_meteorol_gica);
+        txtHumedad.setText(R.string.humedad);
+        txtcoordenadas.setText(R.string.coordenadas);
 
 
     }
@@ -740,64 +710,64 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private  int dameicono(String icon){
+    private int dameicono(String icon) {
 
 
-        if(icon.equals("01d")){
-            //icono.setImageResource(R.drawable.sol);
-            return R.drawable.sol;
-        }else if (icon.equals("02d")){
-            //icono.setImageResource(R.drawable.claros);
-            return R.drawable.claros;
-        }else if (icon.equals("03d")){
-            //icono.setImageResource(R.drawable.nubes);
-            return R.drawable.nubes;
-        }else if (icon.equals("04d")){
-            //icono.setImageResource(R.drawable.masnubes);
-            return R.drawable.masnubes;
-        }else if (icon.equals("09d")){
-            //icono.setImageResource(R.drawable.nubeslluvia);
-            return R.drawable.nubeslluvia;
-        }else if (icon.equals("10d")){
-            //icono.setImageResource(R.drawable.lluviasol);
-            return R.drawable.lluviasol;
-        }else if (icon.equals("11d")){
-            //icono.setImageResource(R.drawable.maslluvia);
-            return R.drawable.maslluvia;
-        }else if (icon.equals("13d")){
-            //icono.setImageResource(R.drawable.nieve);
-            return R.drawable.nieve;
-        }else if (icon.equals("50d")){
-            //icono.setImageResource(R.drawable.niebla);
-            return R.drawable.niebla;
-        }else if (icon.equals("01n")){
-            //icono.setImageResource(R.drawable.nocheclara);
-            return R.drawable.nocheclara;
-        }else if (icon.equals("02n")){
-            //icono.setImageResource(R.drawable.nochenubes);
-            return R.drawable.nochenubes;
-        }else if (icon.equals("03n")){
-            //icono.setImageResource(R.drawable.nubes);
-            return R.drawable.nubes;
-        }else if (icon.equals("04n")){
-            //icono.setImageResource(R.drawable.masnubes);
-            return R.drawable.masnubes;
-        }else if (icon.equals("10n")){
-            //icono.setImageResource(R.drawable.nubeslluvia);
-            return R.drawable.nubeslluvia;
-        }else if (icon.equals("11n")){
-            //icono.setImageResource(R.drawable.maslluvia);
-            return R.drawable.maslluvia;
-        }else if (icon.equals("13n")){
-            //icono.setImageResource(R.drawable.nieve);
-            return R.drawable.nieve;
-        }else if (icon.equals("50n")){
-            //icono.setImageResource(R.drawable.niebla);
-            return R.drawable.niebla;
-        }
-        else{
-            //icono.setImageResource(R.drawable.sol);
-            return R.drawable.error;
+        switch (icon) {
+            case "01d":
+                //icono.setImageResource(R.drawable.sol);
+                return R.drawable.sol;
+            case "02d":
+                //icono.setImageResource(R.drawable.claros);
+                return R.drawable.claros;
+            case "03d":
+                //icono.setImageResource(R.drawable.nubes);
+                return R.drawable.nubes;
+            case "04d":
+                //icono.setImageResource(R.drawable.masnubes);
+                return R.drawable.masnubes;
+            case "09d":
+                //icono.setImageResource(R.drawable.nubeslluvia);
+                return R.drawable.nubeslluvia;
+            case "10d":
+                //icono.setImageResource(R.drawable.lluviasol);
+                return R.drawable.lluviasol;
+            case "11d":
+                //icono.setImageResource(R.drawable.maslluvia);
+                return R.drawable.maslluvia;
+            case "13d":
+                //icono.setImageResource(R.drawable.nieve);
+                return R.drawable.nieve;
+            case "50d":
+                //icono.setImageResource(R.drawable.niebla);
+                return R.drawable.niebla;
+            case "01n":
+                //icono.setImageResource(R.drawable.nocheclara);
+                return R.drawable.nocheclara;
+            case "02n":
+                //icono.setImageResource(R.drawable.nochenubes);
+                return R.drawable.nochenubes;
+            case "03n":
+                //icono.setImageResource(R.drawable.nubes);
+                return R.drawable.nubes;
+            case "04n":
+                //icono.setImageResource(R.drawable.masnubes);
+                return R.drawable.masnubes;
+            case "10n":
+                //icono.setImageResource(R.drawable.nubeslluvia);
+                return R.drawable.nubeslluvia;
+            case "11n":
+                //icono.setImageResource(R.drawable.maslluvia);
+                return R.drawable.maslluvia;
+            case "13n":
+                //icono.setImageResource(R.drawable.nieve);
+                return R.drawable.nieve;
+            case "50n":
+                //icono.setImageResource(R.drawable.niebla);
+                return R.drawable.niebla;
+            default:
+                //icono.setImageResource(R.drawable.sol);
+                return R.drawable.error;
         }
 
 

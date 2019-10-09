@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "557592195738",
+    "firebase_url": "https://antoniofirebase.firebaseio.com",
+    "project_id": "antoniofirebase",
+    "storage_bucket": "antoniofirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557592195738:android:d92ec86f22b2c380",
+        "android_client_info": {
+          "package_name": "antonioejemplo.com.pronosticodeltiempo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557592195738-4vf13vj052427onr559k0nr43t9qaj56.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "antonioejemplo.com.pronosticodeltiempo",
+            "certificate_hash": "4169D25C429DA0A43334FAF5A7541C5766CDFD53"
+          }
+        },
+        {
+          "client_id": "557592195738-g01hi59pg9mkdekb3ecr7r7kjopinh71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKZCqdQTGe2NsLJnJKrl1DcMvm7wjs7l0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "557592195738-g01hi59pg9mkdekb3ecr7r7kjopinh71.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -10,8 +10,9 @@
     tools:showIn="@layout/activity_main"
     android:paddingLeft="@dimen/recyclerview_left_margin"
     android:paddingRight="@dimen/recyclerview_right_margin"
-
     android:visibility="invisible"
+
+
     />
 
 

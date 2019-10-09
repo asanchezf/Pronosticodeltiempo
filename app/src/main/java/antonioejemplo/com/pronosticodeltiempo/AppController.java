@@ -1,6 +1,8 @@
 package antonioejemplo.com.pronosticodeltiempo;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -23,6 +25,17 @@ public class AppController extends Application {
     private ImageLoader mImageLoader;
 
     private static AppController mInstance;
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+    /*    MODIFICACIÓN POR MultiDex
+        4/12/2017--https://stackoverflow.com/questions/42827205/app-crashed-wiht-classes-dex-permission-denied-error*/
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+
 
     @Override
     public void onCreate() {
